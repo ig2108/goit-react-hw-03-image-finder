@@ -1,0 +1,12 @@
+24.03.2020
+npm install --save gh-pages;
+npm install --save-dev prop-types;
+npm install classnames --save;
+npm install --save styled-components;
+28.03.2020
+npm install shortid;
+npm i indicative;
+03.04.2020
+npm install axios;
+
+
