@@ -2,14 +2,12 @@ import React, { Component } from 'react';
 import Searchbar from '../Searchbar/Searchbar';
 import imagesApi from '../../services/imagesApi';
 import ImageGallery from '../ImageGallery/ImageGallery';
-// import Modal from '../Modal/Modal';
+import Modal from '../Modal/Modal';
 import Loader from '../Loader/Loader';
 import ButtonLoadMore from '../ButtonLoadMore/ButtonLoadMore';
 
 import styles from './App.module.css';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
-
-// import throttle from 'lodash.throttle';
 
 export default class App extends Component {
   state = {
@@ -17,8 +15,8 @@ export default class App extends Component {
     searchInput: '',
     pageCurrent: 1,
     isLoading: false,
-    isModalOpen: false,
     error: null,
+    imageId: '',
   };
 
   componentDidMount() {
@@ -59,20 +57,21 @@ export default class App extends Component {
       );
   };
 
-  openModal = () =>
-    this.setState({
-      isModalOpen: true,
-    });
+  openModal = e => {
+    const { id } = e.target;
+    this.setState({ imageId: id });
+  };
 
   closeModal = () =>
     this.setState({
-      isModalOpen: false,
+      imageId: '',
     });
 
   handleSubmit = queryInput => {
     this.setState({
       images: [],
       searchInput: queryInput,
+      pageCurrent: 1,
     });
   };
 
@@ -83,17 +82,20 @@ export default class App extends Component {
   };
 
   render() {
-    const { images, searchInput, error, isLoading } = this.state;
+    const { images, error, isLoading, imageId } = this.state;
     return (
       <div className={styles.container}>
-        <Searchbar
-          value={searchInput}
-          onChange={this.handleChangeInputSearch}
-          onSubmit={this.handleSubmit}
-        />
-        {error && <img src="../../error.jpg" alt="" />}
+        <Searchbar onSubmit={this.handleSubmit} />
+        {error && <img src="../../error.jpg" alt="error" />}
         {isLoading && <Loader />}
-        <ImageGallery images={images} />
+        <ImageGallery images={images} onClickImage={this.openModal} />
+        {imageId && (
+          <Modal
+            images={images}
+            imageId={imageId}
+            onCloseModal={this.closeModal}
+          />
+        )}
         {images.length > 0 && (
           <ButtonLoadMore onLoadMore={this.handleLoadMore} />
         )}
