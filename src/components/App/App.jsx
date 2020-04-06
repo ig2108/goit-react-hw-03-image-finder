@@ -19,22 +19,17 @@ export default class App extends Component {
     imageId: '',
   };
 
-  componentDidMount() {
-    this.fetchImages();
-  }
-
   componentDidUpdate(prevProps, prevState) {
     if (
       prevState.pageCurrent !== this.state.pageCurrent ||
       prevState.searchInput !== this.state.searchInput
     ) {
       this.fetchImages();
-
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: 'smooth',
-      });
     }
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth',
+    });
   }
 
   fetchImages = () => {
@@ -79,6 +74,11 @@ export default class App extends Component {
     this.setState(prevState => ({
       pageCurrent: prevState.pageCurrent + 1,
     }));
+
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth',
+    });
   };
 
   render() {
@@ -88,7 +88,9 @@ export default class App extends Component {
         <Searchbar onSubmit={this.handleSubmit} />
         {error && <img src="../../error.jpg" alt="error" />}
         {isLoading && <Loader />}
-        <ImageGallery images={images} onClickImage={this.openModal} />
+        {images.length > 0 && (
+          <ImageGallery images={images} onClickImage={this.openModal} />
+        )}
         {imageId && (
           <Modal
             images={images}
